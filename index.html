@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday Mariam 🌼</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500;600&family=Dancing+Script:wght@600;700&family=Noto+Serif+JP:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+<!-- Cursor / touch sparkle trail -->
+<canvas id="trailCanvas"></canvas>
+
+<!-- Background music toggle -->
+<button id="musicToggle" class="music-toggle" aria-label="Play music">
+  <span class="music-icon">♪</span>
+</button>
+
+<!-- ============================================================
+     SCENE 1 – INTRO ENVELOPE
+============================================================ -->
+<section id="scene-1" class="scene active">
+  <div class="sky-bg">
+    <!-- Floating clouds -->
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    <!-- Sparkles -->
+    <div class="sparkle-field" id="sparkleField"></div>
+    <!-- Floating doodles -->
+    <div class="doodle doodle-coffee-1">☕</div>
+    <div class="doodle doodle-coffee-2">☕</div>
+    <div class="doodle doodle-star-1">✦</div>
+    <div class="doodle doodle-star-2">✦</div>
+    <div class="doodle doodle-star-3">✦</div>
+  </div>
+
+  <!-- SVG Petals background -->
+  <div class="petals-bg" id="petalsBg"></div>
+
+  <!-- Center content -->
+  <div class="envelope-wrapper" id="envelopeWrapper">
+    <div class="envelope" id="envelope">
+      <!-- Envelope body -->
+      <svg class="env-svg" viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+        <!-- Shadow -->
+        <ellipse cx="160" cy="215" rx="110" ry="8" fill="rgba(0,0,0,0.08)"/>
+        <!-- Body -->
+        <rect x="10" y="60" width="300" height="150" rx="18" fill="#fffaf5" stroke="#d4b8e0" stroke-width="2"/>
+        <!-- Bottom flap fold lines -->
+        <line x1="10" y1="60" x2="160" y2="145" stroke="#e8d5f5" stroke-width="1.5"/>
+        <line x1="310" y1="60" x2="160" y2="145" stroke="#e8d5f5" stroke-width="1.5"/>
+        <!-- Daisy seal -->
+        <circle cx="160" cy="145" r="22" fill="#87CEEB" opacity="0.9"/>
+        <circle cx="160" cy="145" r="8" fill="#FFF9C4"/>
+        <!-- Daisy petals on seal -->
+        <ellipse cx="160" cy="126" rx="4" ry="8" fill="white" opacity="0.9"/>
+        <ellipse cx="160" cy="164" rx="4" ry="8" fill="white" opacity="0.9"/>
+        <ellipse cx="141" cy="145" rx="8" ry="4" fill="white" opacity="0.9"/>
+        <ellipse cx="179" cy="145" rx="8" ry="4" fill="white" opacity="0.9"/>
+        <ellipse cx="147" cy="132" rx="4" ry="8" fill="white" opacity="0.9" transform="rotate(45 147 132)"/>
+        <ellipse cx="173" cy="132" rx="4" ry="8" fill="white" opacity="0.9" transform="rotate(-45 173 132)"/>
+        <ellipse cx="147" cy="158" rx="4" ry="8" fill="white" opacity="0.9" transform="rotate(-45 147 158)"/>
+        <ellipse cx="173" cy="158" rx="4" ry="8" fill="white" opacity="0.9" transform="rotate(45 173 158)"/>
+        <!-- Top flap -->
+        <polygon points="10,60 160,155 310,60" fill="#d4b8e0" opacity="0.35"/>
+        <!-- Flap border -->
+        <polygon points="10,60 160,155 310,60" fill="none" stroke="#c4a0d8" stroke-width="1.5"/>
+      </svg>
+
+      <!-- Text on envelope -->
+      <div class="env-label">
+        <span class="env-to">For Mariam 🌼</span>
+      </div>
+    </div>
+
+    <p class="envelope-subtitle">A Little Birthday Surprise ✨</p>
+    <button class="open-btn" id="openBtn">
+      <span>Open</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCENE 2 – TYPEWRITER MESSAGE
+============================================================ -->
+<section id="scene-2" class="scene">
+  <div class="scene-bg-soft"></div>
+  <div class="floating-petals-2" id="floatingPetals2"></div>
+  <div class="glass-card typewriter-card" id="typewriterCard">
+    <div class="card-decoration top-left">🌼</div>
+    <div class="card-decoration top-right">✨</div>
+    <p class="typewriter-text" id="typewriterText"></p>
+    <button class="next-btn hidden" id="scene2Next">
+      Continue ✨
+    </button>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCENE 3 – CAKE BUILDING
+============================================================ -->
+<section id="scene-3" class="scene">
+  <div class="scene-bg-soft"></div>
+  <div class="scene3-header">
+    <p class="scene-label">Your Birthday Cake 🎂</p>
+  </div>
+  <div class="cake-stage" id="cakeStage">
+    <svg id="cakeSvg" viewBox="0 0 340 420" xmlns="http://www.w3.org/2000/svg">
+
+      <defs>
+        <linearGradient id="gCreamBottom" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fffaf6"/><stop offset="1" stop-color="#ffe9d8"/>
+        </linearGradient>
+        <linearGradient id="gCreamMid" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fff6fc"/><stop offset="1" stop-color="#ffe4f2"/>
+        </linearGradient>
+        <linearGradient id="gCreamTop" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fbf6ff"/><stop offset="1" stop-color="#efe2fb"/>
+        </linearGradient>
+        <radialGradient id="gFlame" cx="0.5" cy="0.65" r="0.6">
+          <stop offset="0" stop-color="#fff6c8"/><stop offset="0.45" stop-color="#FFD75e"/>
+          <stop offset="1" stop-color="#ff9d2e"/>
+        </radialGradient>
+      </defs>
+
+      <!-- CAKE STAND -->
+      <g id="cakeStand" opacity="0">
+        <ellipse cx="170" cy="396" rx="132" ry="15" fill="#e4c2ef"/>
+        <ellipse cx="170" cy="392" rx="132" ry="12" fill="#f0dcf7"/>
+        <path d="M150 374 L138 392 L202 392 L190 374 Z" fill="#d7b0ea"/>
+        <ellipse cx="170" cy="374" rx="22" ry="6" fill="#c79fe0"/>
+      </g>
+
+      <!-- BOTTOM TIER -->
+      <g id="cakeBottom" opacity="0">
+        <rect x="52" y="306" width="236" height="72" rx="20" fill="url(#gCreamBottom)"/>
+        <ellipse cx="170" cy="378" rx="118" ry="13" fill="#ffe2cf"/>
+        <rect x="52" y="346" width="236" height="12" rx="6" fill="#87CEEB" opacity="0.4"/>
+        <circle cx="92"  cy="330" r="5"   fill="#87CEEB"/>
+        <circle cx="138" cy="334" r="4.5" fill="#f4a7c7"/>
+        <circle cx="202" cy="330" r="5"   fill="#c8a7e7"/>
+        <circle cx="248" cy="334" r="4.5" fill="#87CEEB"/>
+        <circle cx="116" cy="367" r="3.5" fill="#f4a7c7"/>
+        <circle cx="170" cy="370" r="3.5" fill="#87CEEB"/>
+        <circle cx="224" cy="367" r="3.5" fill="#c8a7e7"/>
+      </g>
+
+      <!-- BOTTOM CREAM RIM + DRIPS -->
+      <g id="bottomCream" opacity="0">
+        <ellipse cx="170" cy="306" rx="118" ry="14" fill="#ffffff"/>
+        <ellipse cx="72"  cy="316" rx="13" ry="15" fill="#ffffff"/>
+        <ellipse cx="110" cy="320" rx="13" ry="18" fill="#ffffff"/>
+        <ellipse cx="150" cy="318" rx="13" ry="16" fill="#ffffff"/>
+        <ellipse cx="190" cy="320" rx="13" ry="18" fill="#ffffff"/>
+        <ellipse cx="230" cy="318" rx="13" ry="16" fill="#ffffff"/>
+        <ellipse cx="268" cy="316" rx="13" ry="15" fill="#ffffff"/>
+        <circle cx="86"  cy="305" r="8" fill="#fff" stroke="#f3e6fb" stroke-width="2"/>
+        <circle cx="120" cy="303" r="8" fill="#fff" stroke="#f3e6fb" stroke-width="2"/>
+        <circle cx="154" cy="304" r="8" fill="#fff" stroke="#f3e6fb" stroke-width="2"/>
+        <circle cx="188" cy="304" r="8" fill="#fff" stroke="#f3e6fb" stroke-width="2"/>
+        <circle cx="222" cy="303" r="8" fill="#fff" stroke="#f3e6fb" stroke-width="2"/>
+        <circle cx="256" cy="305" r="8" fill="#fff" stroke="#f3e6fb" stroke-width="2"/>
+      </g>
+
+      <!-- MIDDLE TIER -->
+      <g id="cakeMiddle" opacity="0">
+        <rect x="84" y="244" width="172" height="64" rx="16" fill="url(#gCreamMid)"/>
+        <ellipse cx="170" cy="308" rx="86" ry="10" fill="#ffd9ee"/>
+        <rect x="84" y="278" width="172" height="10" rx="5" fill="#87CEEB" opacity="0.38"/>
+        <circle cx="120" cy="262" r="4" fill="#87CEEB"/>
+        <circle cx="160" cy="266" r="4" fill="#f4a7c7"/>
+        <circle cx="200" cy="262" r="4" fill="#c8a7e7"/>
+      </g>
+
+      <!-- MIDDLE CREAM RIM + DRIPS -->
+      <g id="middleCream" opacity="0">
+        <ellipse cx="170" cy="244" rx="86" ry="11" fill="#ffffff"/>
+        <ellipse cx="100" cy="252" rx="11" ry="13" fill="#ffffff"/>
+        <ellipse cx="132" cy="255" rx="11" ry="15" fill="#ffffff"/>
+        <ellipse cx="170" cy="253" rx="11" ry="14" fill="#ffffff"/>
+        <ellipse cx="208" cy="255" rx="11" ry="15" fill="#ffffff"/>
+        <ellipse cx="240" cy="252" rx="11" ry="13" fill="#ffffff"/>
+        <circle cx="110" cy="243" r="7" fill="#fff" stroke="#f3e6fb" stroke-width="2"/>
+        <circle cx="140" cy="242" r="7" fill="#fff" stroke="#f3e6fb" stroke-width="2"/>
+        <circle cx="170" cy="242" r="7" fill="#fff" stroke="#f3e6fb" stroke-width="2"/>
+        <circle cx="200" cy="242" r="7" fill="#fff" stroke="#f3e6fb" stroke-width="2"/>
+        <circle cx="230" cy="243" r="7" fill="#fff" stroke="#f3e6fb" stroke-width="2"/>
+      </g>
+
+      <!-- TOP TIER -->
+      <g id="cakeTop" opacity="0">
+        <rect x="110" y="190" width="120" height="56" rx="14" fill="url(#gCreamTop)"/>
+        <ellipse cx="170" cy="246" rx="60" ry="8" fill="#ecd9fb"/>
+        <rect x="110" y="220" width="120" height="9" rx="4" fill="#87CEEB" opacity="0.34"/>
+        <circle cx="142" cy="208" r="3.5" fill="#f4a7c7"/>
+        <circle cx="170" cy="210" r="3.5" fill="#87CEEB"/>
+        <circle cx="198" cy="208" r="3.5" fill="#c8a7e7"/>
+      </g>
+
+      <!-- TOP CREAM RIM + DRIPS -->
+      <g id="topCream" opacity="0">
+        <ellipse cx="170" cy="190" rx="60" ry="9" fill="#ffffff"/>
+        <ellipse cx="124" cy="197" rx="9" ry="11" fill="#ffffff"/>
+        <ellipse cx="150" cy="199" rx="9" ry="12" fill="#ffffff"/>
+        <ellipse cx="178" cy="199" rx="9" ry="12" fill="#ffffff"/>
+        <ellipse cx="206" cy="197" rx="9" ry="11" fill="#ffffff"/>
+        <circle cx="132" cy="189" r="6" fill="#fff" stroke="#f3e6fb" stroke-width="2"/>
+        <circle cx="156" cy="188" r="6" fill="#fff" stroke="#f3e6fb" stroke-width="2"/>
+        <circle cx="184" cy="188" r="6" fill="#fff" stroke="#f3e6fb" stroke-width="2"/>
+        <circle cx="208" cy="189" r="6" fill="#fff" stroke="#f3e6fb" stroke-width="2"/>
+      </g>
+
+      <!-- DAISY DECORATIONS (seated on the tier fronts) -->
+      <g id="cakeDaisies" opacity="0">
+        <g transform="translate(132,232) scale(0.85)">
+          <circle r="4.5" fill="#FFF9C4"/>
+          <ellipse cx="0" cy="-9" rx="3" ry="6" fill="#fff"/><ellipse cx="0" cy="9" rx="3" ry="6" fill="#fff"/>
+          <ellipse cx="-9" cy="0" rx="6" ry="3" fill="#fff"/><ellipse cx="9" cy="0" rx="6" ry="3" fill="#fff"/>
+          <ellipse cx="-6" cy="-6" rx="3" ry="6" fill="#fff" transform="rotate(45)"/>
+          <ellipse cx="6"  cy="-6" rx="3" ry="6" fill="#fff" transform="rotate(-45)"/>
+          <ellipse cx="-6" cy="6"  rx="3" ry="6" fill="#fff" transform="rotate(-45)"/>
+          <ellipse cx="6"  cy="6"  rx="3" ry="6" fill="#fff" transform="rotate(45)"/>
+        </g>
+        <g transform="translate(170,236) scale(0.92)">
+          <circle r="4.5" fill="#FFF9C4"/>
+          <ellipse cx="0" cy="-9" rx="3" ry="6" fill="#fff"/><ellipse cx="0" cy="9" rx="3" ry="6" fill="#fff"/>
+          <ellipse cx="-9" cy="0" rx="6" ry="3" fill="#fff"/><ellipse cx="9" cy="0" rx="6" ry="3" fill="#fff"/>
+          <ellipse cx="-6" cy="-6" rx="3" ry="6" fill="#fff" transform="rotate(45)"/>
+          <ellipse cx="6"  cy="-6" rx="3" ry="6" fill="#fff" transform="rotate(-45)"/>
+          <ellipse cx="-6" cy="6"  rx="3" ry="6" fill="#fff" transform="rotate(-45)"/>
+          <ellipse cx="6"  cy="6"  rx="3" ry="6" fill="#fff" transform="rotate(45)"/>
+        </g>
+        <g transform="translate(208,232) scale(0.85)">
+          <circle r="4.5" fill="#FFF9C4"/>
+          <ellipse cx="0" cy="-9" rx="3" ry="6" fill="#fff"/><ellipse cx="0" cy="9" rx="3" ry="6" fill="#fff"/>
+          <ellipse cx="-9" cy="0" rx="6" ry="3" fill="#fff"/><ellipse cx="9" cy="0" rx="6" ry="3" fill="#fff"/>
+          <ellipse cx="-6" cy="-6" rx="3" ry="6" fill="#fff" transform="rotate(45)"/>
+          <ellipse cx="6"  cy="-6" rx="3" ry="6" fill="#fff" transform="rotate(-45)"/>
+          <ellipse cx="-6" cy="6"  rx="3" ry="6" fill="#fff" transform="rotate(-45)"/>
+          <ellipse cx="6"  cy="6"  rx="3" ry="6" fill="#fff" transform="rotate(45)"/>
+        </g>
+        <g transform="translate(108,300) scale(0.8)">
+          <circle r="4.5" fill="#FFF9C4"/>
+          <ellipse cx="0" cy="-9" rx="3" ry="6" fill="#fff"/><ellipse cx="0" cy="9" rx="3" ry="6" fill="#fff"/>
+          <ellipse cx="-9" cy="0" rx="6" ry="3" fill="#fff"/><ellipse cx="9" cy="0" rx="6" ry="3" fill="#fff"/>
+          <ellipse cx="-6" cy="-6" rx="3" ry="6" fill="#fff" transform="rotate(45)"/>
+          <ellipse cx="6"  cy="-6" rx="3" ry="6" fill="#fff" transform="rotate(-45)"/>
+        </g>
+        <g transform="translate(232,300) scale(0.8)">
+          <circle r="4.5" fill="#FFF9C4"/>
+          <ellipse cx="0" cy="-9" rx="3" ry="6" fill="#fff"/><ellipse cx="0" cy="9" rx="3" ry="6" fill="#fff"/>
+          <ellipse cx="-9" cy="0" rx="6" ry="3" fill="#fff"/><ellipse cx="9" cy="0" rx="6" ry="3" fill="#fff"/>
+          <ellipse cx="-6" cy="6"  rx="3" ry="6" fill="#fff" transform="rotate(-45)"/>
+          <ellipse cx="6"  cy="6"  rx="3" ry="6" fill="#fff" transform="rotate(45)"/>
+        </g>
+      </g>
+
+      <!-- SPARKLES -->
+      <g id="cakeSparkles" opacity="0">
+        <text x="64"  y="214" font-size="15" opacity="0.8">✦</text>
+        <text x="268" y="222" font-size="13" opacity="0.8">✦</text>
+        <text x="248" y="186" font-size="12" opacity="0.7">✨</text>
+        <text x="78"  y="180" font-size="12" opacity="0.7">✨</text>
+      </g>
+
+      <!-- CANDLES (seated upright on the top tier) -->
+      <g id="cakeCandles3">
+        <g class="s3-candle" transform="translate(130,188)">
+          <ellipse cx="0" cy="0" rx="8" ry="3" fill="#fff" opacity="0.95"/>
+          <rect x="-5" y="-46" width="10" height="46" rx="4" fill="#87CEEB"/>
+          <rect x="-5" y="-46" width="10" height="7" rx="4" fill="#b8e4f9"/>
+          <rect x="-1.1" y="-58" width="2.2" height="12" rx="1.1" fill="#7a5c30"/>
+          <circle cx="0" cy="-61" r="9" fill="#FFE08A" opacity="0.22"/>
+          <g class="s3-flamewrap">
+            <ellipse cx="0" cy="-61" rx="4" ry="7" fill="url(#gFlame)"/>
+            <ellipse cx="0" cy="-60" rx="1.7" ry="3.6" fill="#fff3c0"/>
+          </g>
+        </g>
+        <g class="s3-candle" transform="translate(150,188)">
+          <ellipse cx="0" cy="0" rx="8" ry="3" fill="#fff" opacity="0.95"/>
+          <rect x="-5" y="-46" width="10" height="46" rx="4" fill="#f4a7c7"/>
+          <rect x="-5" y="-46" width="10" height="7" rx="4" fill="#f9c6da"/>
+          <rect x="-1.1" y="-58" width="2.2" height="12" rx="1.1" fill="#7a5c30"/>
+          <circle cx="0" cy="-61" r="9" fill="#FFE08A" opacity="0.22"/>
+          <g class="s3-flamewrap">
+            <ellipse cx="0" cy="-61" rx="4" ry="7" fill="url(#gFlame)"/>
+            <ellipse cx="0" cy="-60" rx="1.7" ry="3.6" fill="#fff3c0"/>
+          </g>
+        </g>
+        <g class="s3-candle" transform="translate(170,188)">
+          <ellipse cx="0" cy="0" rx="8" ry="3" fill="#fff" opacity="0.95"/>
+          <rect x="-5" y="-46" width="10" height="46" rx="4" fill="#c8a7e7"/>
+          <rect x="-5" y="-46" width="10" height="7" rx="4" fill="#ddc6f3"/>
+          <rect x="-1.1" y="-58" width="2.2" height="12" rx="1.1" fill="#7a5c30"/>
+          <circle cx="0" cy="-61" r="9" fill="#FFE08A" opacity="0.22"/>
+          <g class="s3-flamewrap">
+            <ellipse cx="0" cy="-61" rx="4" ry="7" fill="url(#gFlame)"/>
+            <ellipse cx="0" cy="-60" rx="1.7" ry="3.6" fill="#fff3c0"/>
+          </g>
+        </g>
+        <g class="s3-candle" transform="translate(190,188)">
+          <ellipse cx="0" cy="0" rx="8" ry="3" fill="#fff" opacity="0.95"/>
+          <rect x="-5" y="-46" width="10" height="46" rx="4" fill="#87CEEB"/>
+          <rect x="-5" y="-46" width="10" height="7" rx="4" fill="#b8e4f9"/>
+          <rect x="-1.1" y="-58" width="2.2" height="12" rx="1.1" fill="#7a5c30"/>
+          <circle cx="0" cy="-61" r="9" fill="#FFE08A" opacity="0.22"/>
+          <g class="s3-flamewrap">
+            <ellipse cx="0" cy="-61" rx="4" ry="7" fill="url(#gFlame)"/>
+            <ellipse cx="0" cy="-60" rx="1.7" ry="3.6" fill="#fff3c0"/>
+          </g>
+        </g>
+        <g class="s3-candle" transform="translate(210,188)">
+          <ellipse cx="0" cy="0" rx="8" ry="3" fill="#fff" opacity="0.95"/>
+          <rect x="-5" y="-46" width="10" height="46" rx="4" fill="#f4a7c7"/>
+          <rect x="-5" y="-46" width="10" height="7" rx="4" fill="#f9c6da"/>
+          <rect x="-1.1" y="-58" width="2.2" height="12" rx="1.1" fill="#7a5c30"/>
+          <circle cx="0" cy="-61" r="9" fill="#FFE08A" opacity="0.22"/>
+          <g class="s3-flamewrap">
+            <ellipse cx="0" cy="-61" rx="4" ry="7" fill="url(#gFlame)"/>
+            <ellipse cx="0" cy="-60" rx="1.7" ry="3.6" fill="#fff3c0"/>
+          </g>
+        </g>
+      </g>
+
+    </svg>
+  </div>
+  <div class="scene3-footer hidden" id="scene3Footer">
+    <button class="next-btn" id="scene3Next">Make a Wish 🕯️</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCENE 4 – BLOW THE CANDLES
+============================================================ -->
+<section id="scene-4" class="scene">
+  <div class="scene-bg-soft"></div>
+  <div class="scene4-content">
+    <p class="wish-text">Make a wish first ✨</p>
+    <p class="wish-sub">Click each candle to blow it out</p>
+
+    <div class="candles-stage">
+      <div class="candles-row" id="candlesRow">
+        <!-- Generated by JS -->
+      </div>
+      <div class="cake-top-base"></div>
+    </div>
+
+    <div class="candle-counter">
+      Candles Left: <span id="candleCount">5</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCENE 5 – CELEBRATION
+============================================================ -->
+<section id="scene-5" class="scene">
+  <div class="celebration-bg" id="celebrationBg"></div>
+  <canvas id="petalCanvas"></canvas>
+  <div class="celebration-text">
+    <div class="cel-icon">🎊</div>
+    <h2 class="cel-title">Yay! 🌼</h2>
+    <p class="cel-sub">Now let's celebrate! ✨</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCENE 6 – BIRTHDAY CARD
+============================================================ -->
+<section id="scene-6" class="scene">
+  <div class="scene-bg-soft"></div>
+  <div class="floating-petals-6" id="floatingPetals6"></div>
+  <div class="glass-card birthday-card" id="birthdayCard">
+    <div class="card-top-art">
+      <span class="card-flower">🌼</span>
+      <span class="card-flower">🌸</span>
+      <span class="card-flower">🌼</span>
+    </div>
+    <h2 class="card-title">Happy Birthday<br>Mariam 🌼</h2>
+    <p class="card-body">
+      Wishing you a year full of happiness, success,
+      good coffee, beautiful memories, and lots of
+      reasons to smile.
+    </p>
+    <div class="card-divider"></div>
+    <p class="card-sign">
+      Thank you for being such an amazing friend ☕✨
+    </p>
+    <button class="next-btn card-next-btn" id="scene6Next">
+      A Few Words For You 💌
+    </button>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCENE NOTES – THREE LANGUAGES FOR MARIAM
+============================================================ -->
+<section id="scene-notes" class="scene">
+  <div class="scene-bg-soft"></div>
+  <div class="floating-petals-notes" id="floatingPetalsNotes"></div>
+
+  <div class="notes-wrap">
+    <p class="notes-eyebrow">three little notes</p>
+    <h2 class="notes-title">For the Queen 👑</h2>
+
+    <div class="notes-stack" id="notesStack">
+
+      <div class="note-card" data-i="0">
+        <span class="note-stamp">🌼</span>
+        <span class="note-lang">Türkçe&nbsp;🇹🇷</span>
+        <p class="note-text note-tr-text" lang="tr"></p>
+        <p class="note-meaning"></p>
+      </div>
+
+      <div class="note-card" data-i="1">
+        <span class="note-stamp">🌸</span>
+        <span class="note-lang">Türkçe&nbsp;🇹🇷</span>
+        <p class="note-text note-tr-text" lang="tr"></p>
+        <p class="note-meaning"></p>
+      </div>
+
+      <div class="note-card" data-i="2">
+        <span class="note-stamp">🌙</span>
+        <span class="note-lang">日本語&nbsp;🇯🇵</span>
+        <p class="note-text note-jp-text" lang="ja"></p>
+        <p class="note-meaning"></p>
+      </div>
+
+    </div>
+
+    <button class="next-btn notes-next hidden" id="notesNext">One Last Thing 🌙</button>
+    <p class="skip-hint hidden" id="notesSkip">tap anywhere to skip ✨</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     SCENE 7 – FINAL SCREEN
+============================================================ -->
+<section id="scene-7" class="scene">
+  <div class="night-sky" id="nightSky">
+    <div class="stars-layer" id="starsLayer"></div>
+    <div class="moon">🌙</div>
+  </div>
+  <div class="final-content">
+    <div class="final-date">23 July 🌼</div>
+    <p class="final-sub">A day worth celebrating ✨</p>
+
+    <div class="quote-bubble glass-card" id="quoteBubble">
+      <p class="quote-text" id="quoteText">Hope your coffee is always perfect ☕</p>
+    </div>
+
+    <button class="surprise-btn" id="surpriseBtn">
+      ☕ One More Surprise
+    </button>
+    <p class="final-footer">Made with love 🌸</p>
+  </div>
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>
